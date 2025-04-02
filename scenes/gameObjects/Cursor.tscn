@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://bg3sn8jnr7j6h"]
+
+[ext_resource type="Script" uid="uid://b6207nn3wnoyq" path="res://scenes/gameObjects/cursor.gd" id="1_10yhn"]
+[ext_resource type="Texture2D" uid="uid://nbsybemceq3g" path="res://assets/sprites/whirlwind.png" id="2_1xy2b"]
+
+[node name="Cursor" type="Node2D"]
+script = ExtResource("1_10yhn")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(3, 3)
+texture = ExtResource("2_1xy2b")
+hframes = 4
