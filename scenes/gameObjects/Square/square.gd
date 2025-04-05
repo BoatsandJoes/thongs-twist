@@ -1,6 +1,8 @@
 extends Node2D
 class_name Square
 
+signal cleared
+
 const size = 150
 const sprite_size = 50
 const texture = preload("res://assets/sprites/board.png")
@@ -9,9 +11,16 @@ var colorChoices: int = 4
 var sprites: Dictionary[Vector2i, Array] = {
 	Vector2i(0,1): [], Vector2i(0,-1): [], Vector2i(1,0): [], Vector2i(-1,0): []
 	}
+var clearTimer: Timer
 
 func _ready() -> void:
 	random()
+	clearTimer = Timer.new()
+	clearTimer.autostart = false
+	clearTimer.one_shot = true
+	clearTimer.wait_time = 1.0
+	clearTimer.timeout.connect(random)
+	add_child(clearTimer)
 
 func random() -> void:
 	colors[Vector2i(0,1)] = randi_range(0, colorChoices - 1)
@@ -28,6 +37,7 @@ func random() -> void:
 	if !opposites.is_empty():
 		colors[Vector2i(0,0)] = opposites[randi_range(0, opposites.size() - 1)]
 	update_visuals()
+	emit_signal("cleared")
 
 func twist(clockwise: bool):
 	var temp = colors[Vector2i(0,1)]
@@ -42,6 +52,11 @@ func twist(clockwise: bool):
 		colors[Vector2i(0,-1)] = colors[Vector2i(1,0)]
 		colors[Vector2i(1,0)] = temp
 	update_visuals()
+
+func mark(dir: Vector2i):
+	for sprite in sprites[dir]:
+		sprite.set_modulate(Color(5,5,5,1))
+	clearTimer.start()
 
 func update_visuals():
 	if sprites[Vector2i(1,0)].is_empty():
@@ -71,9 +86,10 @@ func update_visuals():
 	for group in sprites.keys():
 		for i in range(4):
 			sprites[group][i].visible = true
+			sprites[group][i].set_modulate(Color(1,1,1,1))
 			#set color
 			sprites[group][i].frame_coords.y = colors[group]
-			#set shape todo
+			#set shape
 			if i == 0:
 				if group == Vector2i(-1, 0):
 					if colors[Vector2i(0, -1)] == colors[group]:

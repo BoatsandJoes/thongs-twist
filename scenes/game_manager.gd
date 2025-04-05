@@ -42,7 +42,7 @@ func _input(event: InputEvent) -> void:
 		if row < board.height - 2:
 			row = row + 1
 			place_cursor()
-	elif event.is_action_pressed("cw"):
+	elif event.is_action_pressed("cw") && !board.clearing:
 		board.twist(row, col, true)
-	elif event.is_action_pressed("ccw"):
+	elif event.is_action_pressed("ccw") && !board.clearing:
 		board.twist(row, col, false)
